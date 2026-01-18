@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
 
 export default function Home() {
@@ -11,6 +11,26 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [focused, setFocused] = useState<string | null>(null);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isOnCard, setIsOnCard] = useState(false);
+
+  // Custom cursor - faster spring config
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+
+  const springConfig = { damping: 30, stiffness: 500 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+
+  useEffect(() => {
+    const moveCursor = (e: MouseEvent) => {
+      cursorX.set(e.clientX - 12);
+      cursorY.set(e.clientY - 12);
+    };
+
+    window.addEventListener("mousemove", moveCursor);
+    return () => window.removeEventListener("mousemove", moveCursor);
+  }, [cursorX, cursorY]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +60,22 @@ export default function Home() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
+      {/* Custom cursor - only visible on card */}
+      <motion.div
+        className="pointer-events-none fixed top-0 left-0 z-50 rounded-full bg-lime-400 mix-blend-difference"
+        style={{
+          x: cursorXSpring,
+          y: cursorYSpring,
+        }}
+        animate={{
+          width: isHovering ? 32 : 24,
+          height: isHovering ? 32 : 24,
+          opacity: isOnCard ? 1 : 0,
+          scale: isOnCard ? 1 : 0.5,
+        }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+      />
+
       {/* Background image */}
       <Image
         src="/background.jpg"
@@ -55,28 +91,30 @@ export default function Home() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative z-10 mx-4 flex w-full max-w-md flex-col items-center bg-white/95 px-8 py-12 shadow-2xl backdrop-blur-sm sm:mx-0 sm:aspect-square sm:justify-center sm:px-12"
+        className="relative z-10 mx-4 flex w-full max-w-md cursor-none flex-col items-center bg-white/95 px-8 py-12 shadow-2xl backdrop-blur-sm sm:mx-0 sm:aspect-square sm:justify-center sm:px-12"
+        onMouseEnter={() => setIsOnCard(true)}
+        onMouseLeave={() => setIsOnCard(false)}
       >
-        {/* Name - BOLD */}
+        {/* Name */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-center"
         >
-          <h1 className="text-5xl font-black uppercase tracking-tighter text-black sm:text-6xl md:text-7xl">
+          <h1 className="font-(family-name:--font-bebas) text-6xl tracking-wide text-black sm:text-7xl md:text-8xl">
             Marc
             <br />
             van de Haar
           </h1>
         </motion.div>
 
-        {/* Tagline - confident */}
+        {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-6 text-sm font-bold uppercase tracking-[0.3em] text-black/60"
+          className="mt-5 text-xs font-bold uppercase tracking-[0.25em] text-black/70"
         >
           Fitness Entrepreneur
         </motion.p>
@@ -85,7 +123,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-4 text-center text-sm text-black/50"
+          className="mt-4 text-center text-md font-medium text-black/50"
         >
           Something new is coming. Be the first to know.
         </motion.p>
@@ -99,13 +137,20 @@ export default function Home() {
         >
           {!submitted ? (
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              <div className="relative">
+              <div
+                className="relative"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
                 <motion.label
-                  className="absolute left-0 text-xs font-bold uppercase tracking-[0.2em] text-black/30 transition-colors"
+                  className="absolute left-0 text-[11px] font-semibold uppercase tracking-[0.15em] text-black/40"
                   animate={{
-                    color: focused === "name" ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.3)",
+                    color:
+                      focused === "name"
+                        ? "rgba(0,0,0,0.8)"
+                        : "rgba(0,0,0,0.4)",
                     y: focused === "name" || name ? -18 : 0,
-                    fontSize: focused === "name" || name ? "10px" : "12px"
+                    fontSize: focused === "name" || name ? "10px" : "11px",
                   }}
                 >
                   Name
@@ -117,17 +162,24 @@ export default function Home() {
                   onFocus={() => setFocused("name")}
                   onBlur={() => setFocused(null)}
                   required
-                  className="w-full border-b-2 border-black/10 bg-transparent pb-2 pt-4 text-sm font-medium text-black outline-none transition-colors focus:border-black"
+                  className="w-full cursor-none border-b-2 border-black/10 bg-transparent pb-2 pt-4 text-sm font-semibold text-black outline-none transition-colors focus:border-black"
                 />
               </div>
 
-              <div className="relative">
+              <div
+                className="relative"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+              >
                 <motion.label
-                  className="absolute left-0 text-xs font-bold uppercase tracking-[0.2em] text-black/30 transition-colors"
+                  className="absolute left-0 text-[11px] font-semibold uppercase tracking-[0.15em] text-black/40"
                   animate={{
-                    color: focused === "email" ? "rgba(0,0,0,0.8)" : "rgba(0,0,0,0.3)",
+                    color:
+                      focused === "email"
+                        ? "rgba(0,0,0,0.8)"
+                        : "rgba(0,0,0,0.4)",
                     y: focused === "email" || email ? -18 : 0,
-                    fontSize: focused === "email" || email ? "10px" : "12px"
+                    fontSize: focused === "email" || email ? "10px" : "11px",
                   }}
                 >
                   Email
@@ -139,18 +191,20 @@ export default function Home() {
                   onFocus={() => setFocused("email")}
                   onBlur={() => setFocused(null)}
                   required
-                  className="w-full border-b-2 border-black/10 bg-transparent pb-2 pt-4 text-sm font-medium text-black outline-none transition-colors focus:border-black"
+                  className="w-full cursor-none border-b-2 border-black/10 bg-transparent pb-2 pt-4 text-sm font-semibold text-black outline-none transition-colors focus:border-black"
                 />
               </div>
 
               {error && (
-                <p className="text-sm font-medium text-red-600">{error}</p>
+                <p className="text-sm font-semibold text-red-600">{error}</p>
               )}
 
               <motion.button
                 type="submit"
                 disabled={loading}
-                className="group relative mt-2 overflow-hidden bg-black px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-50"
+                onMouseEnter={() => setIsHovering(true)}
+                onMouseLeave={() => setIsHovering(false)}
+                className="mt-2 cursor-none bg-black px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-black/85 disabled:cursor-not-allowed disabled:opacity-50"
                 whileHover={loading ? undefined : { scale: 1.02 }}
                 whileTap={loading ? undefined : { scale: 0.98 }}
               >
@@ -163,8 +217,10 @@ export default function Home() {
               animate={{ opacity: 1 }}
               className="text-center"
             >
-              <p className="text-lg font-black uppercase text-black">Thank you</p>
-              <p className="mt-2 text-sm text-black/50">
+              <p className="font-(family-name:--font-bebas) text-3xl tracking-wide text-black">
+                Thank you
+              </p>
+              <p className="mt-2 text-sm font-medium text-black/50">
                 We&apos;ll be in touch.
               </p>
             </motion.div>
