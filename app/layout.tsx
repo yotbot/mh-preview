@@ -15,8 +15,36 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "Marc van de Haar",
-  description: "Fitness Entrepreneur - Coming Soon",
+  title: "Marc van de Haar | Business Consultant & Entrepreneur",
+  description:
+    "Trusted, tailor-made advice that drives clarity. Serial entrepreneur and business consultant helping companies with strategy, reorganisation, and growth. Based in Rotterdam.",
+  keywords: [
+    "business consultant",
+    "entrepreneur",
+    "business strategy",
+    "reorganisation",
+    "corporate consulting",
+    "Rotterdam",
+    "Marc van de Haar",
+  ],
+  authors: [{ name: "Marc van de Haar" }],
+  openGraph: {
+    title: "Marc van de Haar | Business Consultant & Entrepreneur",
+    description:
+      "Trusted, tailor-made advice that drives clarity. Serial entrepreneur helping companies with strategy, reorganisation, and growth.",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Marc van de Haar | Business Consultant",
+    description:
+      "Trusted, tailor-made advice that drives clarity. Serial entrepreneur and business consultant.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
