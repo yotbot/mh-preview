@@ -82,7 +82,7 @@ export default function Home() {
         alt=""
         fill
         priority
-        className="object-cover object-center"
+        className="object-cover object-right scale-135 sm:scale-100"
         sizes="100vw"
       />
 
@@ -91,7 +91,7 @@ export default function Home() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative z-10 mx-4 flex w-full max-w-md cursor-none flex-col items-center bg-white/95 px-8 py-12 shadow-2xl backdrop-blur-sm sm:mx-0 sm:aspect-square sm:justify-center sm:px-12"
+        className="relative z-10 mx-12 flex w-full max-w-sm cursor-none flex-col items-center bg-white/95 px-6 py-10 shadow-2xl backdrop-blur-sm sm:mx-0 sm:max-w-md sm:px-12 sm:py-12 md:aspect-square md:justify-center"
         onMouseEnter={() => setIsOnCard(true)}
         onMouseLeave={() => setIsOnCard(false)}
       >
@@ -114,16 +114,16 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-5 text-xs font-bold uppercase tracking-[0.25em] text-black/70"
+          className="mt-5 text-xs font-bold uppercase tracking-[0.25em] text-black/70 text-center"
         >
-          Fitness Entrepreneur
+          Trusted, tailor made advice that drives clarity
         </motion.p>
 
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-4 text-center text-md font-medium text-black/50"
+          className="mt-4 text-center text-xs md:text-sm font-medium text-black/50"
         >
           Something new is coming. Be the first to know.
         </motion.p>
