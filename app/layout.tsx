@@ -15,6 +15,7 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.marcvandehaar.nl"),
   title: "Marc van de Haar | Business Consultant & Entrepreneur",
   description:
     "Trusted, tailor-made advice that drives clarity. Serial entrepreneur and business consultant helping companies with strategy, reorganisation, and growth. Based in Rotterdam.",
@@ -34,6 +35,7 @@ export const metadata: Metadata = {
       "Trusted, tailor-made advice that drives clarity. Serial entrepreneur helping companies with strategy, reorganisation, and growth.",
     type: "website",
     locale: "en_US",
+    url: "https://www.marcvandehaar.nl",
   },
   twitter: {
     card: "summary_large_image",
@@ -44,6 +46,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: "https://www.marcvandehaar.nl",
   },
 };
 
